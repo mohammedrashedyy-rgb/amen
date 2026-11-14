@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>جرس الأمين — مدرسة ذكور الأمين الأساسية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --emerald-vibrant: #2cb552;
+      --emerald-primary: #1e8e3e;
+      --emerald-deep: #0d6e33;
+      --mint-bg: #f4faf6;
+      --surface: #ffffff;
+      --soft-green: #e7f5eb;
+      --outline: #d7eadd;
+      --sun-amber: #e68a00;
+      --sun-gold: #ffd54f;
+      --ink-dark: #102216;
+      --ink-muted: #4d6655;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      background: var(--mint-bg);
+      color: var(--ink-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 16px 12px 36px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 460px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* البطاقة الخضراء الرئيسية (Bento Hero) */
+    .hero-card {
+      background: linear-gradient(145deg, var(--emerald-vibrant), var(--emerald-primary) 55%, var(--emerald-deep));
+      border-radius: 30px;
+      padding: 16px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 18px 36px rgba(13, 110, 51, 0.22);
+    }
+
+    .hero-card::before,
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.07);
+      pointer-events: none;
+    }
+    .hero-card::before {
+      width: 240px;
+      height: 240px;
+      top: -90px;
+      left: -60px;
+    }
+    .hero-card::after {
+      width: 180px;
+      height: 180px;
+      bottom: -70px;
+      right: -40px;
+    }
+
+    /* الشريط العلوي داخل البطاقة الخضراء */
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .school-pill {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.17);
+      border-radius: 999px;
+      padding: 7px 14px;
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+
+    .school-pill h1 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .school-pill p {
+      font-size: 0.72rem;
+      opacity: 0.88;
+    }
+
+    .icon-circle-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .icon-circle-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* تقسيم Bento الداخلي */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 110px;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .main-session-box {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 24px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .date-line {
+      font-size: 0.78rem;
+      opacity: 0.92;
+      font-weight: 600;
+    }
+
+    .live-clock {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      margin-top: 2px;
+    }
+
+    .period-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .period-window {
+      font-size: 0.8rem;
+      opacity: 0.86;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .remaining-label {
+      font-size: 0.78rem;
+      opacity: 0.92;
+    }
+
+    .countdown-value {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      margin: 4px 0 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.24);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--sun-gold);
+      border-radius: 999px;
+      transition: width 0.5s ease;
+    }
+
+    .side-progress-box {
+      background: rgba(0, 0, 0, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 24px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .side-label {
+      font-size: 0.72rem;
+      opacity: 0.82;
+    }
+
+    .next-name {
+      font-size: 0.86rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .next-time-pill {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 0.76rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .vertical-bar-track {
+      width: 12px;
+      height: 64px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .vertical-bar-fill {
+      width: 100%;
+      height: 15%;
+      background: var(--sun-gold);
+      border-radius: 999px;
+      transition: height 0.5s ease;
+    }
+
+    .lessons-count {
+      font-size: 0.82rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* البطاقات البيضاء السفلية */
+    .white-panel {
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: 28px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(16, 34, 22, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* بطاقة مواقيت الصلاة في فلسطين */
+    .prayer-card {
+      background: linear-gradient(135deg, #ebf7ee, #f7fcf8);
+      border: 1px solid var(--outline);
+      border-radius: 20px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .prayer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .prayer-title-wrap h2 {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+    }
+
+    .city-select {
+      margin-top: 4px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--emerald-deep);
+      background: #fff;
+      border: 1px solid var(--outline);
+      border-radius: 999px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .next-prayer-badge {
+      background: #fff;
+      border: 1px solid var(--outline);
+      border-radius: 14px;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .next-prayer-badge strong {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--emerald-primary);
+    }
+
+    .next-prayer-badge span {
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .prayer-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .prayer-item {
+      padding: 6px 4px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .prayer-item.active {
+      background: var(--emerald-primary);
+      color: #fff;
+    }
+
+    .prayer-item .p-name {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .prayer-item .p-time {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* أزرار المنبه الصوتي والمعاينة */
+    .section-title {
+      font-size: 0.94rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 16px;
+      padding: 12px 10px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--emerald-primary);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--emerald-deep);
+      border-color: var(--outline);
+    }
+
+    .chips-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .chip {
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+      border: 1px solid var(--outline);
+      background: #fff;
+      color: var(--ink-muted);
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--soft-green);
+      color: var(--emerald-deep);
+      border-color: var(--emerald-primary);
+    }
+
+    .alert-toast {
+      background: var(--soft-green);
+      border: 1px solid #b8dfc4;
+      color: var(--emerald-deep);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: none;
+    }
+
+    /* جدول الحصص */
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .period-card {
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: 20px;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .period-card.active {
+      background: var(--emerald-primary);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 10px 22px rgba(30, 142, 62, 0.22);
+    }
+
+    .period-card.is-break:not(.active) {
+      background: #fff8eb;
+      border-color: #f6dfad;
+    }
+
+    .period-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .period-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--soft-green);
+      color: var(--emerald-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.92rem;
+      flex-shrink: 0;
+    }
+
+    .period-card.active .period-badge {
+      background: rgba(255, 255, 255, 0.22);
+      color: #fff;
+    }
+
+    .period-card.is-break:not(.active) .period-badge {
+      background: #ffe9c2;
+      color: var(--sun-amber);
+      font-size: 0.72rem;
+    }
+
+    .period-info h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .period-info p {
+      font-size: 0.76rem;
+      opacity: 0.78;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-pill {
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--soft-green);
+      color: var(--emerald-deep);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .period-card.active .status-pill {
+      background: rgba(255, 255, 255, 0.24);
+      color: #fff;
+    }
+
+    .period-card.upcoming .status-pill {
+      background: #eef3f0;
+      color: var(--ink-muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <!-- البطاقة الرئيسية الخضراء -->
+    <section class="hero-card">
+      <div class="hero-top">
+        <label class="logo-circle" title="اضغط لتغيير شعار المدرسة">
+          <img id="schoolLogoImg" src="school_logo.jpg" alt="شعار مدرسة ذكور الأمين الأساسية"
+               onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+          <span id="logoFallback" style="display:none; color:#1e8e3e; font-weight:800; font-size:0.75rem;">الأمين</span>
+          <input type="file" id="logoPicker" accept="image/*" hidden />
+        </label>
+
+        <div class="school-pill">
+          <h1>مدرسة ذكور الأمين الأساسية</h1>
+          <p id="subStatusText">تأسست عام 1993 • دولة فلسطين</p>
+        </div>
+
+        <button id="voiceToggleBtn" class="icon-circle-btn" title="تفعيل/إيقاف المنبه الصوتي">🔊</button>
+      </div>
+
+      <div class="bento-grid">
+        <div class="main-session-box">
+          <div>
+            <div class="date-line" id="dateText">—</div>
+            <div class="live-clock" id="clockText">00:00:00</div>
+          </div>
+
+          <div>
+            <div class="period-title" id="currentPeriodTitle">—</div>
+            <div class="period-window" id="currentPeriodWindow">—</div>
+          </div>
+
+          <div>
+            <div class="remaining-label" id="remainingLabel">المتبقي من الحصة</div>
+            <div class="countdown-value" id="countdownText">00:00</div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-progress-box">
+          <div>
+            <div class="side-label">التالية</div>
+            <div class="next-name" id="nextPeriodTitle">—</div>
+            <span class="next-time-pill" id="nextPeriodTime">--:--</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div class="vertical-bar-track">
+              <div class="vertical-bar-fill" id="verticalFill"></div>
+            </div>
+            <div class="lessons-count" id="lessonsCountText">0 / 6</div>
+            <div class="side-label">حصص</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- القسم الأبيض السفلي -->
+    <section class="white-panel">
+      <!-- مواقيت الصلاة حسب التوقيت المحلي لدولة فلسطين -->
+      <div class="prayer-card">
+        <div class="prayer-header">
+          <div class="prayer-title-wrap">
+            <h2>🕌 مواقيت الصلاة • فلسطين</h2>
+            <select id="citySelect" class="city-select" aria-label="اختر المدينة الفلسطينية"></select>
+          </div>
+          <div class="next-prayer-badge">
+            <strong id="nextPrayerName">القادمة: —</strong>
+            <span id="nextPrayerCountdown">متبقي 00:00:00</span>
+          </div>
+        </div>
+        <div class="prayer-grid" id="prayerGrid"></div>
+      </div>
+
+      <!-- التنبيهات الصوتية وإشعارات الهاتف -->
+      <div class="section-title">
+        <span>🔔 المنبه الصوتي وإشعارات الهاتف</span>
+        <button id="notifPermBtn" class="chip" type="button">تفعيل الإشعارات</button>
+      </div>
+
+      <div class="btn-row">
+        <button id="testStartBtn" class="btn btn-primary" type="button">🔊 بدأت الحصة</button>
+        <button id="testEndBtn" class="btn btn-outline" type="button">🔔 انتهت الحصة</button>
+      </div>
+
+      <div id="alertToast" class="alert-toast"></div>
+
+      <div class="chips-row">
+        <button class="chip active" data-preview="live" type="button">الوقت الفعلي (فلسطين)</button>
+        <button class="chip" data-preview="08:15:00" type="button">معاينة 08:15</button>
+        <button class="chip" data-preview="10:54:55" type="button">جرس 10:55 (5 ثوانٍ)</button>
+        <button class="chip" data-preview="12:20:00" type="button">معاينة 12:20</button>
+      </div>
+    </section>
+
+    <!-- الجدول المدرسي اليومي -->
+    <section class="timeline-list" id="scheduleList"></section>
+  </main>
+
+  <script>
+    const PERIODS = [
+      { id: 1, badge: "١", title: "الحصة الأولى", start: "08:00", end: "08:40", isBreak: false },
+      { id: 2, badge: "٢", title: "الحصة الثانية", start: "08:45", end: "09:25", isBreak: false },
+      { id: 3, badge: "٣", title: "الحصة الثالثة", start: "09:30", end: "10:10", isBreak: false },
+      { id: 4, badge: "٤", title: "الحصة الرابعة", start: "10:15", end: "10:55", isBreak: false },
+      { id: 5, badge: "استراحة", title: "الاستراحة", start: "10:55", end: "11:15", isBreak: true },
+      { id: 6, badge: "٥", title: "الحصة الخامسة", start: "11:20", end: "12:00", isBreak: false },
+      { id: 7, badge: "٦", title: "الحصة السادسة", start: "12:05", end: "12:45", isBreak: false }
+    ];
+
+    const BELL_EVENTS = [
+      { time: "08:00:00", start: true, title: "بدأت الحصة الأولى", body: "مدرسة ذكور الأمين الأساسية • 08:00 - 08:40" },
+      { time: "08:40:00", start: false, title: "انتهت الحصة الأولى", body: "استعدوا للحصة الثانية الساعة 08:45" },
+      { time: "08:45:00", start: true, title: "بدأت الحصة الثانية", body: "مدرسة ذكور الأمين الأساسية • 08:45 - 09:25" },
+      { time: "09:25:00", start: false, title: "انتهت الحصة الثانية", body: "استعدوا للحصة الثالثة الساعة 09:30" },
+      { time: "09:30:00", start: true, title: "بدأت الحصة الثالثة", body: "مدرسة ذكور الأمين الأساسية • 09:30 - 10:10" },
+      { time: "10:10:00", start: false, title: "انتهت الحصة الثالثة", body: "استعدوا للحصة الرابعة الساعة 10:15" },
+      { time: "10:15:00", start: true, title: "بدأت الحصة الرابعة", body: "مدرسة ذكور الأمين الأساسية • 10:15 - 10:55" },
+      { time: "10:55:00", start: true, title: "انتهت الحصة الرابعة وبدأت الاستراحة", body: "موعد الاستراحة المدرسية • 10:55 - 11:15" },
+      { time: "11:15:00", start: false, title: "انتهت الاستراحة", body: "استعدوا للحصة الخامسة الساعة 11:20" },
+      { time: "11:20:00", start: true, title: "بدأت الحصة الخامسة", body: "مدرسة ذكور الأمين الأساسية • 11:20 - 12:00" },
+      { time: "12:00:00", start: false, title: "انتهت الحصة الخامسة", body: "استعدوا للحصة السادسة الساعة 12:05" },
+      { time: "12:05:00", start: true, title: "بدأت الحصة السادسة", body: "مدرسة ذكور الأمين الأساسية • 12:05 - 12:45" },
+      { time: "12:45:00", start: false, title: "انتهت الحصة السادسة", body: "انتهى الدوام المدرسي، دمتم سالمين" }
+    ];
+
+    const PALESTINE_CITIES = [
+      { id: "jerusalem", name: "القدس الشريف", lat: 31.7683, lon: 35.2137 },
+      { id: "ramallah", name: "رام الله والبيرة", lat: 31.9038, lon: 35.2034 },
+      { id: "hebron", name: "الخليل", lat: 31.5326, lon: 35.0998 },
+      { id: "nablus", name: "نابلس", lat: 32.2211, lon: 35.2544 },
+      { id: "gaza", name: "غزة", lat: 31.5017, lon: 34.4668 },
+      { id: "bethlehem", name: "بيت لحم", lat: 31.7054, lon: 35.2024 },
+      { id: "jenin", name: "جنين", lat: 32.4610, lon: 35.3000 },
+      { id: "tulkarm", name: "طولكرم", lat: 32.3104, lon: 35.0286 }
+    ];
+
+    let voiceEnabled = true;
+    let previewSeconds = null;
+    let lastTriggeredTime = "";
+
+    const citySelect = document.getElementById("citySelect");
+    PALESTINE_CITIES.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = c.name;
+      citySelect.appendChild(opt);
+    });
+
+    // تحميل شعار مخصص من الجهاز إذا رغب المستخدم
+    document.getElementById("logoPicker").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = document.getElementById("schoolLogoImg");
+        img.src = reader.result;
+        img.style.display = "block";
+        document.getElementById("logoFallback").style.display = "none";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("voiceToggleBtn").addEventListener("click", () => {
+      voiceEnabled = !voiceEnabled;
+      document.getElementById("voiceToggleBtn").textContent = voiceEnabled ? "🔊" : "🔇";
+    });
+
+    document.getElementById("notifPermBtn").addEventListener("click", async () => {
+      if (!("Notification" in window)) return;
+      const res = await Notification.requestPermission();
+      document.getElementById("notifPermBtn").textContent =
+        res === "granted" ? "الإشعارات مفعّلة ✓" : "إذن الإشعارات مرفوض";
+    });
+
+    document.querySelectorAll(".chip[data-preview]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".chip[data-preview]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const val = btn.dataset.preview;
+        if (val === "live") {
+          previewSeconds = null;
+          document.getElementById("subStatusText").textContent = "تأسست عام 1993 • دولة فلسطين";
+        } else {
+          const [h, m, s] = val.split(":").map(Number);
+          previewSeconds = h * 3600 + m * 60 + s;
+          document.getElementById("subStatusText").textContent = `وضع المعاينة الحية (${val})`;
+        }
+        lastTriggeredTime = "";
+        tick();
+      });
+    });
+
+    document.getElementById("testStartBtn").addEventListener("click", () => {
+      triggerBellAlert("بدأت الحصة الأولى", "مدرسة ذكور الأمين الأساسية • حان موعد بدء الحصة", true);
+    });
+
+    document.getElementById("testEndBtn").addEventListener("click", () => {
+      triggerBellAlert("انتهت الحصة الأولى", "مدرسة ذكور الأمين الأساسية • حان موعد انتهاء الحصة", false);
+    });
+
+    function toSec(hm) {
+      const [h, m] = hm.split(":").map(Number);
+      return h * 3600 + m * 60;
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function formatMmSs(totalSec) {
+      const s = Math.max(0, totalSec);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      return h > 0 ? `${pad(h)}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+    }
+
+    function format12Arabic(h, m, s = null) {
+      const period = h < 12 ? "صباحاً" : "مساءً";
+      const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      return s === null ? `${pad(h12)}:${pad(m)} ${h < 12 ? "ص" : "م"}` : `${pad(h12)}:${pad(m)}:${pad(s)} ${period}`;
+    }
+
+    // صوت جرس مدرسي لطيف باستخدام Web Audio API + نداء عربي
+    function playBellChime(isStart) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = isStart ? [523.25, 659.25, 783.99] : [783.99, 659.25, 523.25];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.value = freq;
+          const startAt = ctx.currentTime + idx * 0.22;
+          gain.gain.setValueAtTime(0.001, startAt);
+          gain.gain.exponentialRampToValueAtTime(0.25, startAt + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, startAt + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startAt);
+          osc.stop(startAt + 0.46);
+        });
+      } catch (_) {}
+    }
+
+    function speakArabic(text) {
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "ar-PS";
+      utter.rate = 0.95;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function triggerBellAlert(title, body, isStart) {
+      playBellChime(isStart);
+      setTimeout(() => speakArabic(title), 550);
+
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, { body });
+      }
+
+      const toast = document.getElementById("alertToast");
+      toast.textContent = `✓ ${title} — ${body}`;
+      toast.style.display = "block";
+    }
+
+    function getPalestineNow() {
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Hebron",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false
+      }).formatToParts(now);
+
+      const get = (type) => Number(parts.find(p => p.type === type).value);
+      const dayName = new Intl.DateTimeFormat("ar-PS", { timeZone: "Asia/Hebron", weekday: "long" }).format(now);
+      const dateStr = new Intl.DateTimeFormat("ar-PS", { timeZone: "Asia/Hebron", day: "numeric", month: "long", year: "numeric" }).format(now);
+
+      return {
+        year: get("year"),
+        month: get("month"),
+        day: get("day"),
+        hour: get("hour") % 24,
+        minute: get("minute"),
+        second: get("second"),
+        dayName,
+        dateStr,
+        rawDate: now
+      };
+    }
+
+    function getPalestineUtcOffsetHours(date) {
+      const utc = new Date(date.toLocaleString("en-US", { timeZone: "UTC" }));
+      const pal = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Hebron" }));
+      return (pal - utc) / 3600000;
+    }
+
+    // الحساب الفلكي لمواقيت الصلاة في فلسطين
+    function calculatePalestinePrayers(city, palNow) {
+      const dtr = (d) => (d * Math.PI) / 180;
+      const rtd = (r) => (r * 180) / Math.PI;
+      const fixA = (a) => a - 360 * Math.floor(a / 360);
+      const fixH = (a) => a - 24 * Math.floor(a / 24);
+
+      let y = palNow.year, m = palNow.month, day = palNow.day;
+      if (m <= 2) { y -= 1; m += 12; }
+      const A = Math.floor(y / 100);
+      const B = 2 - A + Math.floor(A / 4);
+      const jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + B - 1524.5 - city.lon / 360;
+
+      const d = jd - 2451545.0;
+      const g = fixA(357.529 + 0.98560028 * d);
+      const q = fixA(280.459 + 0.98564736 * d);
+      const L = fixA(q + 1.915 * Math.sin(dtr(g)) + 0.020 * Math.sin(dtr(2 * g)));
+      const e = 23.439 - 0.00000036 * d;
+      const ra = rtd(Math.atan2(Math.cos(dtr(e)) * Math.sin(dtr(L)), Math.cos(dtr(L)))) / 15;
+      const eqt = q / 15 - fixH(ra);
+      const decl = rtd(Math.asin(Math.sin(dtr(e)) * Math.sin(dtr(L))));
+      const offset = getPalestineUtcOffsetHours(palNow.rawDate);
+
+      const dhuhrBase = fixH(12 + offset - city.lon / 15 - eqt);
+      const sunAngle = (ang) => {
+        const ratio = Math.min(1, Math.max(-1, (-Math.sin(dtr(ang)) - Math.sin(dtr(city.lat)) * Math.sin(dtr(decl))) / (Math.cos(dtr(city.lat)) * Math.cos(dtr(decl)))));
+        return rtd(Math.acos(ratio)) / 15;
+      };
+      const asrOffset = () => {
+        const ang = -rtd(Math.atan(1 / (1 + Math.tan(dtr(Math.abs(city.lat - decl))))));
+        const ratio = Math.min(1, Math.max(-1, (Math.sin(dtr(ang)) - Math.sin(dtr(city.lat)) * Math.sin(dtr(decl))) / (Math.cos(dtr(city.lat)) * Math.cos(dtr(decl)))));
+        return rtd(Math.acos(ratio)) / 15;
+      };
+
+      const toHM = (hrs) => {
+        const hNorm = fixH(hrs + 0.5 / 60);
+        const h = Math.floor(hNorm) % 24;
+        const min = Math.floor((hNorm - Math.floor(hNorm)) * 60);
+        return { h, m: min, sec: h * 3600 + min * 60, text: `${pad(h)}:${pad(min)}` };
+      };
+
+      return [
+        { name: "الفجر", ...toHM(dhuhrBase - sunAngle(18.5)) },
+        { name: "الظهر", ...toHM(dhuhrBase + 2 / 60) },
+        { name: "العصر", ...toHM(dhuhrBase + asrOffset()) },
+        { name: "المغرب", ...toHM(dhuhrBase + sunAngle(0.833) + 2 / 60) },
+        { name: "العشاء", ...toHM(dhuhrBase + sunAngle(17.5)) }
+      ];
+    }
+
+    function tick() {
+      const pal = getPalestineNow();
+      let nowSec;
+      let displayHour, displayMin, displaySec;
+
+      if (previewSeconds !== null) {
+        nowSec = previewSeconds;
+        previewSeconds = (previewSeconds + 1) % 86400;
+        displayHour = Math.floor(nowSec / 3600);
+        displayMin = Math.floor((nowSec % 3600) / 60);
+        displaySec = nowSec % 60;
+      } else {
+        displayHour = pal.hour;
+        displayMin = pal.minute;
+        displaySec = pal.second;
+        nowSec = displayHour * 3600 + displayMin * 60 + displaySec;
+      }
+
+      document.getElementById("dateText").textContent = `${pal.dayName} • ${pal.dateStr}`;
+      document.getElementById("clockText").textContent = format12Arabic(displayHour, displayMin, displaySec);
+
+      // فحص التنبيه التلقائي عند الثانية 00
+      const hhmmss = `${pad(displayHour)}:${pad(displayMin)}:${pad(displaySec)}`;
+      if (hhmmss !== lastTriggeredTime) {
+        const ev = BELL_EVENTS.find(e => e.time === hhmmss);
+        if (ev) {
+          lastTriggeredTime = hhmmss;
+          triggerBellAlert(ev.title, ev.body, ev.start);
+        }
+      }
+
+      // تقييم الحالة الحالية للحصص
+      const firstStart = toSec(PERIODS[0].start);
+      const lastEnd = toSec(PERIODS[PERIODS.length - 1].end);
+      let activeIdx = -1;
+      let statusTitle = "";
+      let statusWindow = "";
+      let remLabel = "";
+      let remSec = 0;
+      let progress = 0;
+      let nextTitle = "الحصة ١";
+      let nextTime = "08:00";
+
+      if (nowSec < firstStart) {
+        statusTitle = "قبل بداية الدوام";
+        statusWindow = "بداية الحصة الأولى الساعة 08:00";
+        remLabel = "متبقي لبدء الحصة الأولى";
+        remSec = firstStart - nowSec;
+        progress = 0;
+        nextTitle = PERIODS[0].title;
+        nextTime = PERIODS[0].start;
+      } else if (nowSec >= lastEnd) {
+        statusTitle = "انتهى الدوام المدرسي";
+        statusWindow = "الدوام من 08:00 إلى 12:45";
+        remLabel = "موعد الحصة الأولى غداً";
+        remSec = (86400 - nowSec) + firstStart;
+        progress = 100;
+        nextTitle = PERIODS[0].title;
+        nextTime = PERIODS[0].start;
+      } else {
+        for (let i = 0; i < PERIODS.length; i++) {
+          const p = PERIODS[i];
+          const s = toSec(p.start);
+          const e = toSec(p.end);
+          if (nowSec >= s && nowSec < e) {
+            activeIdx = i;
+            statusTitle = p.title;
+            statusWindow = `${p.start} — ${p.end}`;
+            remLabel = p.isBreak ? "المتبقي من الاستراحة" : "المتبقي من الحصة";
+            remSec = e - nowSec;
+            progress = ((nowSec - s) / (e - s)) * 100;
+            const nxt = PERIODS[i + 1];
+            nextTitle = nxt ? nxt.title : "نهاية الدوام";
+            nextTime = nxt ? nxt.start : "12:45";
+            break;
+          }
+          const nxt = PERIODS[i + 1];
+          if (nxt && nowSec >= e && nowSec < toSec(nxt.start)) {
+            statusTitle = "فاصل انتقالي";
+            statusWindow = `بعد ${p.title}`;
+            remLabel = `تبدأ ${nxt.title} خلال`;
+            remSec = toSec(nxt.start) - nowSec;
+            progress = ((nowSec - e) / (toSec(nxt.start) - e)) * 100;
+            nextTitle = nxt.title;
+            nextTime = nxt.start;
+            break;
+          }
+        }
+      }
+
+      const completedLessons = PERIODS.filter(p => !p.isBreak && nowSec >= toSec(p.end)).length;
+
+      document.getElementById("currentPeriodTitle").textContent = statusTitle;
+      document.getElementById("currentPeriodWindow").textContent = statusWindow;
+      document.getElementById("remainingLabel").textContent = remLabel;
+      document.getElementById("countdownText").textContent = formatMmSs(remSec);
+      document.getElementById("progressFill").style.width = `${Math.min(100, Math.max(0, progress))}%`;
+      document.getElementById("nextPeriodTitle").textContent = nextTitle;
+      document.getElementById("nextPeriodTime").textContent = nextTime;
+      document.getElementById("lessonsCountText").textContent = `${completedLessons} / 6`;
+      document.getElementById("verticalFill").style.height = `${Math.max(12, (completedLessons / 6) * 100)}%`;
+
+      // تحديث مواقيت الصلاة
+      const city = PALESTINE_CITIES.find(c => c.id === citySelect.value) || PALESTINE_CITIES[0];
+      const prayers = calculatePalestinePrayers(city, pal);
+      let nextPrayer = prayers.find(p => p.sec > nowSec);
+      let nextPrayerRem = nextPrayer ? nextPrayer.sec - nowSec : (86400 - nowSec) + prayers[0].sec;
+      if (!nextPrayer) nextPrayer = prayers[0];
+
+      document.getElementById("nextPrayerName").textContent = `القادمة: ${nextPrayer.name} (${format12Arabic(nextPrayer.h, nextPrayer.m)})`;
+      document.getElementById("nextPrayerCountdown").textContent = `متبقي ${formatMmSs(nextPrayerRem)}`;
+
+      const prayerGrid = document.getElementById("prayerGrid");
+      prayerGrid.innerHTML = prayers.map(p => `
+        <div class="prayer-item ${p.name === nextPrayer.name ? "active" : ""}">
+          <span class="p-name">${p.name}</span>
+          <span class="p-time">${p.text}</span>
+        </div>
+      `).join("");
+
+      // تحديث قائمة الجدول اليومي
+      const scheduleList = document.getElementById("scheduleList");
+      scheduleList.innerHTML = PERIODS.map((p, idx) => {
+        const s = toSec(p.start), e = toSec(p.end);
+        const isActive = idx === activeIdx;
+        const isDone = nowSec >= e;
+        const stateText = isActive ? `متبقي ${formatMmSs(e - nowSec)}` : isDone ? "انتهت" : "قادمة";
+        const cls = [
+          "period-card",
+          isActive ? "active" : "",
+          p.isBreak ? "is-break" : "",
+          !isActive && !isDone ? "upcoming" : ""
+        ].join(" ");
+        return `
+          <div class="${cls}">
+            <div class="period-left">
+              <div class="period-badge">${p.badge}</div>
+              <div class="period-info">
+                <h3>${p.title}</h3>
+                <p>${p.start} — ${p.end} (${(e - s) / 60} دقيقة)</p>
+              </div>
+            </div>
+            <span class="status-pill">${stateText}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    citySelect.addEventListener("change", tick);
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
